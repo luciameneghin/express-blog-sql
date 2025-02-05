@@ -4,20 +4,22 @@ const port = 3000;
 
 const blogsRouter = require('./routes/blogsRouters')
 
-//middleware
-const checkData = require('./middlewares/checkData')
+//middleware import
 const errorsHandler = require('./middlewares/errorsHandler')
 const notFound = require('./middlewares/notFound')
 
 
 app.use(express.json())
 
+
+//rotte blog
+app.use('/posts', blogsRouter)
+
+
 //rotta server
 app.use('/', (req, res) => {
   res.send('server blog');
 })
-//rotte blog
-app.use('/blog', blogsRouter)
 
 //middlewares
 app.use(errorsHandler)
