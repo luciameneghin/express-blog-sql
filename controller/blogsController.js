@@ -1,4 +1,5 @@
 //importo connessione al db
+const { compileFunction } = require('vm');
 const connection = require('../data/db.js');
 
 const index = (req, res) => {
@@ -37,7 +38,11 @@ const modify = (req, res) => {
 
 const destroy = (req, res) => {
   const id = req.params.id;
-  res.send(`cancello post del blog ${id}`)
+  const sql = 'DELETE FROM posts WHERE id = ?';
+  connection.query(sql, [id], (e) => {
+    if (e) return res.status(500).json({ error: 'post non eliminato' });
+    res.sendStatus(204)
+  })
 }
 
 
