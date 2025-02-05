@@ -17,7 +17,19 @@ const index = (req, res) => {
 
 const show = (req, res) => {
   const id = req.params.id;
-  res.send(`creo post nel blog ${id}`);
+  const sqlPost = 'SELECT * FROM posts WHERE id = ?'
+
+  connection.query(sqlPost, [id], (e, results) => {
+    if (e) {
+      return res.status(500).json({ error: 'Errore nella query del database', err });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'post non trovato' })
+    }
+
+    let post = results[0]
+    res.json(post)
+  })
 }
 
 
