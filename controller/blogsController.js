@@ -18,6 +18,10 @@ const index = (req, res) => {
 const show = (req, res) => {
   const id = req.params.id;
   const sqlPost = 'SELECT * FROM posts WHERE id = ?'
+  const sqlTags = `SELECT T.* 
+  FROM tags T
+  JOIN post_tag PT ON PT.tag_id = T.id
+  WHERE PT.post_id = ?`
 
   connection.query(sqlPost, [id], (e, results) => {
     if (e) {
@@ -28,7 +32,12 @@ const show = (req, res) => {
     }
 
     let post = results[0]
-    res.json(post)
+
+    connection.query(sqlTags, [id], (e, tagsResaults) => {
+      if (e) return res.status(500).json({ error: 'Errore nella query del database', err });
+      post.tags = tagsResaults;
+      res.json(post);
+    })
   })
 }
 
